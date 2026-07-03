@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.example.dto.PartialPaymentRequest;
 import com.example.model.Loan;
 import com.example.model.Payment;
 import com.example.repository.LoanRepo;
@@ -25,12 +26,13 @@ public class PaymentService {
     public Payment payEMIPayment(Long loanId) {
         Loan loan = getLoanOrThrow(loanId);
         double amount = calculateEmiAmount(loan);
-        return createPayment(loan, amount, "EMI payment");
+        return createPayment(loan, amount, "EMI payment",loan.getTenure()-1);
     }
 
-    public Payment payPartialPayment(Long loanId, double amount) {
+    public Payment payPartialPayment(Long loanId, PartialPaymentRequest request) {
         Loan loan = getLoanOrThrow(loanId);
         double minAmount = calculateEmiAmount(loan) * 3;
+        double amount = request.getAmount();
         if (amount < minAmount) {
             throw new IllegalArgumentException(String.format("Partial payment must be at least 3 EMI amounts (minimum %.2f)", minAmount));
         }
@@ -40,20 +42,20 @@ public class PaymentService {
             throw new IllegalArgumentException(String.format("Partial payment cannot exceed remaining loan amount %.2f", remaining));
         }
 
-        return createPayment(loan, amount, "Partial payment");
+        return createPayment(loan, amount, "Partial payment", loan.getTenure() - 3);
     }
 
     public Payment preCloseLoan(Long loanId) {
         Loan loan = getLoanOrThrow(loanId);
         double amount = Optional.ofNullable(loan.getPrincipalAmount()).orElse(0.0);
-        return createPayment(loan, amount, "Preclose payment");
+        return createPayment(loan, amount, "Preclose payment", 0);
     }
 
     public List<Payment> getPaymentHistory(Long loanId) {
         return paymentRepo.findByLoanId(loanId);
     }
 
-    private Payment createPayment(Loan loan, double amount, String remarks) {
+    private Payment createPayment(Loan loan, double amount, String remarks, int remainingTenure) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Calculated payment amount must be greater than zero");
         }
@@ -69,7 +71,12 @@ public class PaymentService {
 
         loan.setPrincipalAmount(Math.max(0.0, Optional.ofNullable(loan.getPrincipalAmount()).orElse(0.0) - amount));
         loan.getPayments().add(savedPayment);
-        loanRepo.save(loan);
+        loan.setTenure(remainingTenure);
+        if (remainingTenure == 0) {
+            loanRepo.delete(loan);
+        } else {
+            loanRepo.save(loan);
+        }
 
         return savedPayment;
     }

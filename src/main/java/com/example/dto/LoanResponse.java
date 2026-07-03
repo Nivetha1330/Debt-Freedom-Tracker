@@ -15,5 +15,6 @@ public class LoanResponse {
     private Double principalAmount;
     private Double interestRate;
     private String lenderName;
+    private int tenure;
 
 }

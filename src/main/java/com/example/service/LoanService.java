@@ -48,6 +48,7 @@ public class LoanService {
             .principalAmount(loanRequest.getPrincipalAmount())
             .interestRate(loanRequest.getInterestRate())
             .lenderName(loanRequest.getLenderName().name())
+            .tenure(loanRequest.getTenure())
             .build();
         return loan;
     }
@@ -57,7 +58,8 @@ public class LoanService {
                 loan.getLoanName(),
                 loan.getPrincipalAmount(),
                 loan.getInterestRate(),
-                loan.getLenderName());
+                loan.getLenderName(),
+                loan.getTenure());
     }
 
 }

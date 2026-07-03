@@ -31,4 +31,9 @@ public class LoanRequest {
     @NotNull(message="Lender name is required")
     private Lender lenderName;
 
+    @NotBlank(message = "Tenure is required")
+    @Min(value = 1, message = "tenure must be at least 1 year")
+    @Max(value = 72, message = "tenure cannot exceed 6 years")
+    private int tenure;
+
 }

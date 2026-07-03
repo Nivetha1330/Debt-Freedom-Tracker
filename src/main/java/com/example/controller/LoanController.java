@@ -70,6 +70,7 @@ public class LoanController {
                 .principalAmount(loanRequest.getPrincipalAmount())
                 .interestRate(loanRequest.getInterestRate())
                 .lenderName(loanRequest.getLenderName().name())
+                .tenure(loanRequest.getTenure())
                 .build();
             return loanService.saveLoan(loanRequest);
         } else {

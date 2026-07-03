@@ -31,7 +31,7 @@ public class PaymentController {
 
     @PostMapping("/partial/{loanId}")
     public Payment payPartialPayment(@PathVariable Long loanId, @RequestBody PartialPaymentRequest request) {
-        return paymentService.payPartialPayment(loanId, request.getAmount());
+        return paymentService.payPartialPayment(loanId, request);
     }
 
     @PostMapping("/preclose/{loanId}")

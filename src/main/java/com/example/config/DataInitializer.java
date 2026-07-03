@@ -25,8 +25,8 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         List<Loan> loans = Arrays.asList(
-            Loan.builder().loanName("Personal Loan").principalAmount(1000000.0).interestRate(10.3).lenderName("ICICI").build(),
-            Loan.builder().loanName("Gold Loan").principalAmount(1400000.0).interestRate(9.0).lenderName("HDFC").build()
+            Loan.builder().loanName("Personal Loan").principalAmount(1000000.0).interestRate(10.3).lenderName("ICICI").tenure(72).build(),
+            Loan.builder().loanName("Gold Loan").principalAmount(1400000.0).interestRate(9.0).lenderName("HDFC").tenure(12).build()
         );
 
         loanRepo.saveAll(loans);

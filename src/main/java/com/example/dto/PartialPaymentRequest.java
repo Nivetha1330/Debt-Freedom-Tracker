@@ -16,4 +16,5 @@ public class PartialPaymentRequest {
     @NotNull(message = "Payment amount is required")
     @Min(value = 1, message = "Payment amount must be greater than zero")
     private Double amount;
+    private String reducutionType; // "principal" or "interest"
 }
